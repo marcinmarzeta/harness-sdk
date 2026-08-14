@@ -1,6 +1,5 @@
 """Shared error classification for OpenAI model providers."""
 
-import re
 from typing import Literal
 
 OpenAIErrorKind = Literal["context_overflow", "throttling"]
@@ -15,11 +14,9 @@ _CONTEXT_WINDOW_OVERFLOW_PATTERNS = (
     "input is too long for requested model",
     "input length and `max_tokens` exceed context limit",
     "too many total text bytes",
+    "exceed customer model maximum",
     "exceeds the max_model_len",
 )
-# Providers phrase the token-budget overflow around "model maximum" differently: OpenAI says
-# "exceed customer model maximum", Bedrock Mantle drops the qualifier ("exceed model maximum").
-_CONTEXT_WINDOW_OVERFLOW_REGEX = re.compile(r"exceed(?:s|ed)?(?: customer)? model maximum")
 _RATE_LIMIT_PATTERNS = ("rate_limit_exceeded", "rate limit", "too many requests")
 
 
@@ -36,11 +33,7 @@ def classify_openai_error(error: BaseException) -> OpenAIErrorKind | None:
     ):
         return "throttling"
 
-    if (
-        code == "context_length_exceeded"
-        or any(pattern in message for pattern in _CONTEXT_WINDOW_OVERFLOW_PATTERNS)
-        or _CONTEXT_WINDOW_OVERFLOW_REGEX.search(message)
-    ):
+    if code == "context_length_exceeded" or any(pattern in message for pattern in _CONTEXT_WINDOW_OVERFLOW_PATTERNS):
         return "context_overflow"
 
     return None

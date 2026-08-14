@@ -22,7 +22,6 @@ class OpenAICompatibleError(Exception):
         "too many total text bytes",
         "exceed customer model maximum",
         "the engine prompt length exceeds the max_model_len",
-        "prompt tokens (1200008) exceed model maximum (1050000) for openai.gpt-5.6-terra",
     ],
 )
 def test_classify_openai_error_context_overflow_message(message):
@@ -62,16 +61,8 @@ def test_classify_openai_error_throttling_precedes_context_overflow():
     assert classify_openai_error(error) == "throttling"
 
 
-@pytest.mark.parametrize(
-    "message",
-    [
-        "unrelated failure",
-        "model maximum output tokens must be a positive integer",
-        "requested model openai.gpt-5.6-terra is not available in this region",
-    ],
-)
-def test_classify_openai_error_unknown(message):
-    assert classify_openai_error(OpenAICompatibleError(message)) is None
+def test_classify_openai_error_unknown():
+    assert classify_openai_error(OpenAICompatibleError("unrelated failure")) is None
 
 
 def test_classify_openai_error_non_string_code():

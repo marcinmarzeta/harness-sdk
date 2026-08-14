@@ -814,7 +814,7 @@ class BedrockModel(Model):
         if "cachePoint" in content:
             cache_point = content["cachePoint"]
             result: dict[str, Any] = {"type": cache_point["type"]}
-            if cache_point.get("ttl"):
+            if "ttl" in cache_point:
                 result["ttl"] = cache_point["ttl"]
             return {"cachePoint": result}
 

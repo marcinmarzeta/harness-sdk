@@ -9,14 +9,6 @@ servers.
 from .mcp_agent_tool import MCPAgentTool
 from .mcp_client import MCPClient, MCPServerConfig, ToolFilters
 from .mcp_tasks import TasksConfig
-from .mcp_types import MCPClientCredentials, MCPTransport
+from .mcp_types import MCPTransport
 
-__all__ = [
-    "MCPAgentTool",
-    "MCPClient",
-    "MCPClientCredentials",
-    "MCPServerConfig",
-    "MCPTransport",
-    "TasksConfig",
-    "ToolFilters",
-]
+__all__ = ["MCPAgentTool", "MCPClient", "MCPServerConfig", "MCPTransport", "TasksConfig", "ToolFilters"]
